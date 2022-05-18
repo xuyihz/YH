@@ -5,8 +5,8 @@
 
 %%
 function iEL_end = YH_model_Radial(fileID, iNO, iEL,...
-    Num_Radial,...
-    Num_n1_n2, Num_n2_n23, Num_n23_n3, Node_Itvl, FZ)
+    Num_Radial, Node_Itvl, n_iNo_Start, n_Ring_num,...
+    Num_n1_n2, Num_n2_n23, Num_n23_n3, FZ, MatFile)
 %% ELEMENT
 fprintf(fileID,'*ELEMENT    ; Elements\n');
 fprintf(fileID,'; iEL, TYPE, iMAT, iPRO, iN1, iN2, ANGLE, iSUB, EXVAL, iOPT(EXVAL2) ; Frame  Element\n; iEL, TYPE, iMAT, iPRO, iN1, iN2, ANGLE, iSUB, EXVAL, EXVAL2, bLMT ; Comp/Tens Truss\n; iEL, TYPE, iMAT, iPRO, iN1, iN2, iN3, iN4, iSUB, iWID , LCAXIS    ; Planar Element\n; iEL, TYPE, iMAT, iPRO, iN1, iN2, iN3, iN4, iN5, iN6, iN7, iN8     ; Solid  Element\n');
@@ -19,10 +19,10 @@ ELE_iPRO_Cable_b = 2;
 ELE_iPRO_Cable_m = 3;
 ELE_iPRO_Truss_Can_t = 4;
 ELE_iPRO_Truss_Can_b = 5;
-ELE_iPRO_Truss_Can_m = 6;
+ELE_iPRO_Truss_Can_w = 6;
 ELE_iPRO_Truss_End_t = 7;
 ELE_iPRO_Truss_End_b = 8;
-ELE_iPRO_Truss_End_m = 9;
+ELE_iPRO_Truss_End_w = 9;
 ELE_iPRO_Column_S = 10;
 ELE_iPRO_Column_L = 11;
 
@@ -55,8 +55,12 @@ for i = 1 : Num_Radial % 榀
         % 以下语句为索单元，比梁单元多最后两项
         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
-            iN1, iN2,...    % 斜交网格单元的两个节点号
+            iN1, iN2,...    % 单元的两个节点号
             ELE_ANGLE, ELE_iSUB, TENSTR_F1);
+        if MatFile == true
+            element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+            element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+        end
     end
     iNO = iNO - (Num_n1_n2 + 1);
 end
@@ -81,8 +85,12 @@ for i = 1 : Num_Radial % 榀
         iEL = iEL+1;
         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
-            iN1, iN2,...    % 斜交网格单元的两个节点号
+            iN1, iN2,...    % 单元的两个节点号
             ELE_ANGLE, ELE_iSUB, TENSTR_F2);
+        if MatFile == true
+            element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+            element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+        end
     end
     iNO = iNO - (Num_n1_n2 + 1);
 end
@@ -99,8 +107,12 @@ for i = 1 : Num_Radial % 榀
         iEL = iEL+1;
         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
-            iN1, iN2,...    % 斜交网格单元的两个节点号
+            iN1, iN2,...    % 单元的两个节点号
             ELE_ANGLE, ELE_iSUB, TENSTR_F3);
+        if MatFile == true
+            element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+            element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+        end
     end
     iNO = iNO - Num_n1_n2;
 end
@@ -156,7 +168,7 @@ for i = 1 : Num_Radial % 榀
 end
 % 腹杆
 fprintf(fileID,'; Truss_Can_M\n');
-ELE_iPRO = ELE_iPRO_Truss_Can_m;
+ELE_iPRO = ELE_iPRO_Truss_Can_w;
 iNO = iNO_init; % 初始化iNO
 for i = 1 : Num_Radial % 榀
     iNO = iNO + Node_Itvl;
@@ -242,7 +254,7 @@ for i = 1 : Num_Radial % 榀
 end
 % 腹杆
 fprintf(fileID,'; Truss_End_M\n');
-ELE_iPRO = ELE_iPRO_Truss_End_m;
+ELE_iPRO = ELE_iPRO_Truss_End_w;
 iNO = iNO_init; % 初始化iNO
 for i = 1 : Num_Radial % 榀
     iNO = iNO + Node_Itvl;
