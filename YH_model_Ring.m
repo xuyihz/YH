@@ -21,7 +21,7 @@ n23_iNo_Start = n_iNo_Start(4); n23_l_iNo_Start = n_iNo_Start(5); n23_0_iNo_Star
 n3_iNo_Start = n_iNo_Start(7); iNO_Ring_Start = n_iNo_Start(8);
 
 iNO_init = - Node_Itvl;
-ELE_iPRO_Ring_inner = 12;
+ELE_iPRO_Ring_inner = 3;
 ELE_iPRO_Ring_Outer = 12;
 ELE_iPRO_Cable_t = 3;
 ELE_iPRO_Cable_b = 3;
@@ -32,13 +32,16 @@ ELE_iPRO_Truss_End_t = 9;
 ELE_iPRO_Truss_End_b = 9;
 ELE_iPRO_Truss_End_w = 9;
 
-TENSTR_F4 = 200;
+TENSTR_F4 = 2000;
 
 fprintf(fileID,'; Ring\n');
 
-ELE_TYPE = 'BEAM';
-ELE_iMAT = 1;
-ELE_iSUB = 0;
+% ELE_TYPE = 'BEAM';
+% ELE_iMAT = 1;
+% ELE_iSUB = 0;
+ELE_TYPE = 'TENSTR';
+ELE_iMAT = 3; % User Define Cable
+ELE_iSUB = 3; % TENSTR/Cable
 % 内环
 fprintf(fileID,'; InnerRing\n');
 ELE_iPRO = ELE_iPRO_Ring_inner;
@@ -53,10 +56,16 @@ for i = 1 : Num_Radial % 榀
         iN2 = iN1 + Node_Itvl;
     end
     iEL = iEL+1;
-    fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...
+    % 梁
+    %     fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...
+    %         iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
+    %         iN1, iN2,...    % 单元的两个节点号
+    %         ELE_ANGLE, ELE_iSUB);
+    % 索
+    fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
         iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
         iN1, iN2,...    % 单元的两个节点号
-        ELE_ANGLE, ELE_iSUB);
+        ELE_ANGLE, ELE_iSUB, TENSTR_F4);
     if MatFile == true
         element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
         element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat

@@ -4,7 +4,7 @@
 % Xu Yi, 2022.5.12
 
 %%
-function YH_model(fileID)
+function YH_model(fileID, MatFile)
 %% initials
 iNO = 0;    % 节点号初始化
 iEL = 0;    % 单元号初始化
@@ -25,8 +25,6 @@ n23_0 = n23; n23_0(:, 3) = 0;   % n23_0节点位置 (立柱底位置)
 n2_l = n2 - [0, 0, H_n2];       % n2_l节点位置 (索桁架外环位置,桁架底)
 % 节点力
 FZ = -40;   % 节点力,单位kN,向上为正
-% 记录 true / false
-MatFile = false;
 
 %% append models
 % Node
