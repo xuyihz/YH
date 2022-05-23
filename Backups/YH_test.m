@@ -168,8 +168,8 @@ end
 % 额外约束
 for i = 1 : length(Node_Coordinate(:,1))
     iNo_N = Node_Coordinate(i,1);
-    for j = 1 : length(Element_Node(:,1))
-        if iNo_N == Element_Node(j,1)
+    for j = 1 : length(Node_Support(:,1))
+        if iNo_N == Node_Support(j,1)
             continue;
         end
     end

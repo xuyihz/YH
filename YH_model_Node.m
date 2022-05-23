@@ -6,7 +6,7 @@
 %%
 function [Node_Itvl, n_iNo_Start, n_Ring_num] = YH_model_Node(fileID, iNO,...
     n1, n2, n3, n23, n23_l, n23_0, n2_l,...
-    Num_Radial, Ring_itvl,...
+    Num_Radial, Ring_itvl, f1, f2,...
     Num_n1_n2, Num_n2_n23, Num_n23_n3,...
     FZ, MatFile)
 %% NODE
@@ -14,6 +14,13 @@ fprintf(fileID,'*NODE    ; Nodes\n');
 fprintf(fileID,'; iNO, X, Y, Z\n');
 
 Node_Itvl = (Num_n1_n2 + Num_n2_n23 + Num_n23_n3) * 2 +7;   % 每一榀的节点数
+
+if MatFile == true
+    save('Data/YH.mat','Num_Radial','-append');
+    save('Data/YH.mat','Num_n1_n2','-append');
+    save('Data/YH.mat','Node_Itvl','-append');
+end
+
 % 榀
 iNO_Radial_init = iNO; % 备份
 for i = 1:Num_Radial % 榀
@@ -29,8 +36,10 @@ for i = 1:Num_Radial % 榀
         node_coordinate(iNO, n1(i,1), n1(i,2), n1(i,3));    % 坐标 记录到.mat
     end
     % n1~n2, 先上后下
-    for j = 1 : Num_n1_n2
+    % 位形按抛物线 见interp_para
+    for j = 1 : Num_n1_n2   % 上索
         n_temp = interp(n1(i,:), n2(i,:), Num_n1_n2, j);
+        n_temp(3) = interp_para(n1(i,:), n2(i,:), Num_n1_n2, j, f1);
 
         iNO = iNO+1;
         fprintf(fileID,'   %d, %.4f, %.4f, %.4f\n',...
@@ -39,8 +48,9 @@ for i = 1:Num_Radial % 榀
             node_coordinate(iNO, n_temp(1), n_temp(2), n_temp(3));   % 坐标 记录到.mat
         end
     end
-    for j = 1 : Num_n1_n2
+    for j = 1 : Num_n1_n2   % 下索
         n_temp = interp(n1(i,:), n2_l(i,:), Num_n1_n2, j);
+        n_temp(3) = interp_para(n1(i,:), n2_l(i,:), Num_n1_n2, j, f2);
 
         iNO = iNO+1;
         fprintf(fileID,'   %d, %.4f, %.4f, %.4f\n',...
@@ -167,7 +177,8 @@ n_sum_Ring_num = n2_Ring_num + n2_l_Ring_num + 2*sum(n2_n23_Ring_num) ...
     + n23_Ring_num + n23_l_Ring_num + 2*sum(n23_n3_Ring_num) + n3_Ring_num;
 n_Ring_num = {n2_Ring_num, n2_l_Ring_num, n2_n23_Ring_num, n23_Ring_num,...
     n23_l_Ring_num, n23_n3_Ring_num, n3_Ring_num, n_sum_Ring_num};
-% 榀
+
+% 环的腹杆
 for i = 1 : Num_Radial% 榀
     for j = 1 : 1   % n2
         for k = 1 : n2_Ring_num

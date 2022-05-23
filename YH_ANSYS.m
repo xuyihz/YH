@@ -9,79 +9,16 @@ close all; clear; clc;
 %% 
 addpath(genpath('Func'))        % 搜索路径中加入Func文件夹及其下所有文件夹
 
-%% D1内环端点，D12上弦端点，D17下弦端点
-D1 = [86589.4302350000,...
-    208336.601512000,...
-    45270.4671790000];
-D12 = [51526.8986960000,...
-    210741.961660000,...
-    47520.3353290000];
-D17 = [51526.8986960000,...
-    210741.961660000,...
-    44520.3353290000];
-
-%% 模型 单位: mm
-% 节点坐标
-Node_Coordinate = [];
-Node_Coordinate(1, :) = [1, D1];
-Num = 5;
-f1 = 400;
-for i = 1:Num
-    n_temp = interp(D1, D12, Num, i);
-    n_temp(3) = interp_para(D1, D12, Num, i, f1);
-    Node_Coordinate(i+1, :) = [i+1, n_temp];
-end
-f2 = -300;
-for i = 1:Num
-    n_temp = interp(D1, D17, Num, i);
-    n_temp(3) = interp_para(D1, D17, Num, i, f2);
-    Node_Coordinate(i+Num+1, :) = [i+Num+1, n_temp];
-end
-Node_Coordinate(12, :) = [12, D12];
-Node_Coordinate(13, :) = [17, D17];
-
-% 节点约束
-Node_Support = [1, 1, 1, 1;...
-    12, 1, 1, 1;...
-    17, 1, 1, 1];
-
-% 单元节点
-Element_Node = [1, 1, 2;...
-    2, 2, 3;...
-    3, 3, 4;...
-    4, 4, 5;...
-    5, 5, 6;...
-    6, 6, 12;...
-    265, 1, 7;...
-    266, 7, 8;...
-    267, 8, 9;...
-    268, 9, 10;...
-    269, 10, 11;...
-    270, 11, 17;...
-    529, 2, 7;...
-    530, 3, 8;...
-    531, 4, 9;...
-    532, 5, 10;...
-    533, 6, 11;];
-
-% 单元属性
-Element_Property = [1, 1, 3;...
-    2, 1, 3;...
-    3, 1, 3;...
-    4, 1, 3;...
-    5, 1, 3;...
-    6, 1, 3;...
-    265, 2, 3;...
-    266, 2, 3;...
-    267, 2, 3;...
-    268, 2, 3;...
-    269, 2, 3;...
-    270, 2, 3;...
-    529, 3, 3;...
-    530, 3, 3;...
-    531, 3, 3;...
-    532, 3, 3;...
-    533, 3, 3;];
+%%
+% 其中环向索仅导入了内环
+load('Data/YH.mat',...      % 数据文件位置
+    'Node_Coordinate',...   % [节点编号, X坐标, Y坐标, Z坐标]
+    'Node_Support',...      % [节点编号, X约束, Y约束, Z约束]
+    'Element_Node',...      % [单元编号, 节点编号1, 节点编号2]
+    'Element_Property',...  % [单元编号, 索直径编号, 索弹性模量编号]
+    'Num_Radial',...        % 榀数
+    'Num_n1_n2',...         % n1~n2间的分隔数 (索桁架处)
+    'Node_Itvl');           % 每一榀的节点数
 
 %% ANSYS APDL
 fileID = fopen('..\ANSYS\ANSYS_Files\Cable.ansys.txt','w');   % Open or create new file for writing. Discard existing contents, if any.
@@ -168,8 +105,8 @@ end
 % 额外约束
 for i = 1 : length(Node_Coordinate(:,1))
     iNo_N = Node_Coordinate(i,1);
-    for j = 1 : length(Element_Node(:,1))
-        if iNo_N == Element_Node(j,1)
+    for j = 1 : length(Node_Support(:,1))
+        if iNo_N == Node_Support(j,1)
             continue;
         end
     end
@@ -220,20 +157,42 @@ fprintf(fileID,'FINISH\n');
 % 求解 (迭代)
 fprintf(fileID,'!逐点去约束法(迭代)\n');
 
-%%% 循环 %%%
+%%% 循环 %%% 榀数 I : Num_Radial
 % *DO, Par(循环变量名，如I), IVAL(起始值), FVAL(终止值), INC(步长)
 % Defines the beginning of a do-loop.
+fprintf(fileID,'*DO, I, 1, %d, 1\n', Num_Radial);
+% 第一个三杆单元的 节点 和 3个单元 的编号
+fprintf(fileID,'iNo_N_des = %d+1+%d*(I-1)\n', Num_n1_n2, Node_Itvl);
+fprintf(fileID,'iNo_E_des1 = I*(%d+1)\n', Num_n1_n2);
+fprintf(fileID,'iNo_E_des2 = iNo_E_des1-1\n');
+fprintf(fileID,'iNo_E_des3 = iNo_E_des2+(%d+1)*2*%d\n', Num_n1_n2, Num_Radial);
+
+%%% 循环 %%% 上下索 J : 2
+fprintf(fileID,'*DO, J, 1, %d, 1\n', 2);
+% *IF, VAL1, Oper1, VAL2, Base1, VAL3, Oper2, VAL4, Base2 
+% Conditionally causes commands to be read.
+fprintf(fileID,'*IF, J, EQ, 1, THEN\n');    % if j == 1
+
+
+fprintf(fileID,'*ELSE\n');    % else
+
+
+fprintf(fileID,'*ENDIF\n');    % end
+
+
 iNo_N_des_Start = 6;
 iNo_N_des_End = 2;
 iNo_E_des1_Start = 6;
 iNo_E_des2_Start = 5;
 iNo_E_des3_Start = 533;
-fprintf(fileID,'*DO, I, 1, %d, 1\n', iNo_N_des_Start-iNo_N_des_End+1);
 
-fprintf(fileID,'iNo_N_des = %d-I\n', iNo_N_des_Start+1);
-fprintf(fileID,'iNo_E_des1 = %d-I+1\n', iNo_E_des1_Start);
-fprintf(fileID,'iNo_E_des2 = %d-I+1\n', iNo_E_des2_Start);
-fprintf(fileID,'iNo_E_des3 = %d-I+1\n', iNo_E_des3_Start);
+%%% 循环 %%% 间隔数 K : Num_n1_n2
+fprintf(fileID,'*DO, K, 1, %d, 1\n', Num_n1_n2);
+
+fprintf(fileID,'iNo_N_des = %d-J\n', iNo_N_des_Start+1);
+fprintf(fileID,'iNo_E_des1 = %d-J+1\n', iNo_E_des1_Start);
+fprintf(fileID,'iNo_E_des2 = %d-J+1\n', iNo_E_des2_Start);
+fprintf(fileID,'iNo_E_des3 = %d-J+1\n', iNo_E_des3_Start);
 
 fprintf(fileID,'/PREP7\n'); % 进入前处理模块
 % 删除某点约束
@@ -311,7 +270,11 @@ fprintf(fileID,'ETABLE, REFL\n');   % 重填单元表
 fprintf(fileID,'*GET, EPEL1, ELEM, iNo_E_des2, ETAB, EPELT\n');    % 提取单元2应变(弦索2)(即下一个计算节点的单元1)
 fprintf(fileID,'FINISH\n');
 
-fprintf(fileID,'*ENDDO\n'); % 结束循环，激活新循环
+fprintf(fileID,'*ENDDO\n'); % 结束 间隔数 循环，激活新循环
+
+fprintf(fileID,'*ENDDO\n'); % 结束 上下索 循环，激活新循环
+
+fprintf(fileID,'*ENDDO\n'); % 结束 榀数 循环，激活新循环
 
 %% 自动调用ANSYS
 % ANSYS_dir = "C:\Program Files\ANSYS Inc\v202\ANSYS\bin\winx64\ANSYS202.exe";

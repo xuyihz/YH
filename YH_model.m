@@ -25,13 +25,16 @@ n23_0 = n23; n23_0(:, 3) = 0;   % n23_0节点位置 (立柱底位置)
 n2_l = n2 - [0, 0, H_n2];       % n2_l节点位置 (索桁架外环位置,桁架底)
 % 节点力
 FZ = -40;   % 节点力,单位kN,向上为正
+% 上下索的垂度
+f1 = 400;   % 上索跨中垂度(向下) mm
+f2 = -300;  % 上索跨中垂度(向上) mm
 
 %% append models
 % Node
 fprintf(fileID,'; Node\n');
 [Node_Itvl, n_iNo_Start, n_Ring_num] = YH_model_Node(fileID, iNO,...
     n1, n2, n3, n23, n23_l, n23_0, n2_l,...
-    length(n1), Ring_itvl,...
+    length(n1), Ring_itvl, f1, f2,...
     Num_n1_n2, Num_n2_n23, Num_n23_n3,...
     FZ, MatFile);
 

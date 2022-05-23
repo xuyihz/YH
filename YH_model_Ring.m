@@ -97,10 +97,10 @@ for i = 1 : Num_Radial % 榀
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
             iN1, iN2,...    % 单元的两个节点号
             ELE_ANGLE, ELE_iSUB, TENSTR_F4);
-        if MatFile == true
-            element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
-            element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
-        end
+%         if MatFile == true
+%             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+%             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+%         end
     end
     iNO = iNO - Num_n1_n2;
 end
@@ -123,10 +123,10 @@ for i = 1 : Num_Radial % 榀
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
             iN1, iN2,...    % 单元的两个节点号
             ELE_ANGLE, ELE_iSUB, TENSTR_F4);
-        if MatFile == true
-            element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
-            element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
-        end
+%         if MatFile == true
+%             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+%             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+%         end
     end
     iNO = iNO - Num_n1_n2;
 end
