@@ -34,8 +34,12 @@ ELE_iPRO_Truss_End_w = 9;
 
 TENSTR_F4 = 2000;
 
-fprintf(fileID,'; Ring\n');
+iEL_Ring = iEL + 1; % 内环起始单元编号
+if MatFile == true
+    save('Data/YH.mat','iEL_Ring','-append');
+end
 
+fprintf(fileID,'; Ring\n');
 % ELE_TYPE = 'BEAM';
 % ELE_iMAT = 1;
 % ELE_iSUB = 0;

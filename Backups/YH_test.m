@@ -84,7 +84,7 @@ Element_Property = [1, 1, 3;...
     533, 3, 3;];
 
 %% ANSYS APDL
-fileID = fopen('..\ANSYS\ANSYS_Files\Cable.ansys.txt','w');   % Open or create new file for writing. Discard existing contents, if any.
+fileID = fopen('..\..\ANSYS\ANSYS_Files\Cable.ansys.txt','w');   % Open or create new file for writing. Discard existing contents, if any.
 
 % 初始化
 fprintf(fileID,'FINISH\n');
