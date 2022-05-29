@@ -1,9 +1,8 @@
 %% Generate APDL file
-% 【待修改】
-% Build /SOLU
+% Form-Finding
 % ANSYS APDL file
 % run ANSYS in batch mode (Maybe)
-% Xu Yi, 2022.5.24
+% Xu Yi, 2022.5.29
 
 %%
 close all; clear; clc;
@@ -27,7 +26,7 @@ load('../Data/YH_ANSYS.mat',... % 数据文件位置
     'EPEL_B');              % 更新的(与上索一致)单榀下索自应力模态(应变)
 
 %% ANSYS APDL
-fileID = fopen('..\..\ANSYS\ANSYS_Files\4.SOLU_Ring.ansys.txt','w');   % Open or create new file for writing. Discard existing contents, if any.
+fileID = fopen('..\..\ANSYS\ANSYS_Files\3.Form-finding.ansys.txt','w');   % Open or create new file for writing. Discard existing contents, if any.
 
 %%
 % 把EPEL_T的数据导入APDL同名数组

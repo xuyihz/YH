@@ -4,22 +4,22 @@
 % Xu Yi, 2022.5.26
 
 %%
-close all; clear; clc;
-
-%% 
-addpath(genpath('Func'))        % 搜索路径中加入Func文件夹及其下所有文件夹
+function YH_Module_Shape_Est(Node_Coordinate, Num_Radial, Node_Itvl)
 
 %%
 % 其中环向索仅导入了内环
-load('../Data/YH.mat',...      % 数据文件位置
-    'Node_Coordinate',...   % [节点编号, X坐标, Y坐标, Z坐标]
-    'Node_Support',...      % [节点编号, X约束, Y约束, Z约束]
-    'Element_Node',...      % [单元编号, 节点编号1, 节点编号2]
-    'Element_Property',...  % [单元编号, 索直径编号, 索弹性模量编号]
-    'Num_Radial',...        % 榀数
-    'Num_n1_n2',...         % n1~n2间的分隔数 (索桁架处)
-    'Node_Itvl',...         % 每一榀的节点数
-    'iEL_Ring');            % 内环起始单元编号
+% load('../Data/YH.mat',...   % 数据文件位置
+%     'Node_Coordinate',...   % [节点编号, X坐标, Y坐标, Z坐标]
+%     'Node_Support',...      % [节点编号, X约束, Y约束, Z约束]
+%     'Element_Node',...      % [单元编号, 节点编号1, 节点编号2]
+%     'Element_Property',...  % [单元编号, 索直径编号, 索弹性模量编号]
+%     'Num_Radial',...        % 榀数
+%     'Num_n1_n2',...         % n1~n2间的分隔数 (索桁架处)
+%     'Node_Itvl',...         % 每一榀的节点数
+%     'iEL_Ring');            % 内环起始单元编号
+
+%% 初始化
+status = 0;
 
 %%
 for i = 1 : Num_Radial
@@ -79,7 +79,15 @@ for i = 1 : Num_Radial
 
     % 判断P_C1的z坐标是否大于P_x的z坐标 (即P_C1在内环3节点形成平面之上)
     if P_C1(3) > P_x(3)
-        fprintf('节点%d不满足。\n', iNo_N);
+        status = 1;
+        fprintf('第%d榀 内环节点不满足。\n', i);
     end
+
+end
+
+%%
+if status == 1
+    error('有不满足的节点')
+end
 
 end
