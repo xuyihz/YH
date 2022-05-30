@@ -1,10 +1,10 @@
-%% Shape Estimation
+%% Shape Judge
 % 判断内环节点处
 % 上索是否在内环两直线形成的平面之上
 % Xu Yi, 2022.5.26
 
 %%
-function YH_Module_Shape_Est(Node_Coordinate, Num_Radial, Node_Itvl)
+function YH_Module_Shape_Judge(Node_Coordinate, Num_Radial, Node_Itvl)
 
 %%
 % 其中环向索仅导入了内环
