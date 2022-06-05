@@ -4,7 +4,7 @@
 % Xu Yi, 2022.5.24
 
 %%
-function [EPEL_T_N, EPEL_B_N] = YH_Module_EPEL(Num_Radial, Num_n1_n2,...
+function YH_Module_EPEL(Num_Radial, Num_n1_n2,...
     ANSYS_Mdir, EPEL_T_FN, EPEL_B_FN, Fext, EPEL_FDir)
 
 %%
@@ -58,5 +58,9 @@ end
 % 保存竖索一致的EPEL_T/EPEL_B至.mat
 save(EPEL_FDir, EPEL_T_N);              % 单榀上索自应力模态(应变)
 save(EPEL_FDir, EPEL_B_N, '-append');   % 更新的(与上索一致)单榀下索自应力模态(应变)
+
+%% 删除原ANSYS输出txt
+delete(EPEL_T_FDir)
+delete(EPEL_B_FDir)
 
 end

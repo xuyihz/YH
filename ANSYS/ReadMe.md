@@ -5,6 +5,8 @@
    > 保存为n1.xlsx(内环)、n2(中环)、n3(外环)
    >
    > 并运行YH_Rhino_Node.m保存excel数据至.mat数据
+   >
+   > **运行YH.m生成YH.mat**
 
 ### MATLAB x ANSYS (APDL)
 

@@ -145,16 +145,3 @@ fprintf(fileID,'FINISH\n');
 
 %%
 fclose('all');
-
-%% 自动调用ANSYS
-% ANSYS_dir = "C:\Program Files\ANSYS Inc\v202\ANSYS\bin\winx64\ANSYS202.exe";
-% ANSYS_Fdir = "E:\项目\2022余杭国际体育中心\计算模型\ANSYS\ANSYS_Files";
-% ANSYS_Mdir = "E:\项目\2022余杭国际体育中心\计算模型\ANSYS\Model";
-% ANSYS_iFile = "Cable.ansys.txt";
-% ANSYS_oFile = "result.out";
-% 
-% % -b: batch模式; -p: license; -dir: 工作目录; -i: 输入文件; -o: 输出文件
-% command = sprintf('"%s" -b -p ane3fl -dir "%s" -i "%s\\%s" -o "%s\\%s"',...
-%     ANSYS_dir, ANSYS_Mdir, ANSYS_Fdir, ANSYS_iFile, ANSYS_Fdir, ANSYS_oFile);
-% % status = 0 表示成功运行
-% status = system(command);

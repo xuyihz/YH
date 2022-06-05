@@ -66,11 +66,13 @@ for i = 1 : Num_Radial
 
         Node_Co_Cb_Start = Node_Co_para(Node_Co_C, Node_Co_nCb, Num_n1_n2, f2);
 
-        for j = 1 : Num_n1_n2   % 更新下索节点
+        % 更新下索节点
+        for j = 1 : Num_n1_n2
             n_temp = interp(Node_Co_C, Node_Co_Cb_Start, Num_n1_n2, j);
             n_temp(3) = interp_para(Node_Co_C, Node_Co_Cb_Start, Num_n1_n2, j, f2);
             Node_Co_Part(Num_n1_n2+1+j, 2:4) = n_temp;
         end
+        Node_Co_Part(end, 2:4) = Node_Co_Cb_Start;
 
         %% ANSYS APDL
         fileID = fopen(FileDir,'w');   % Open or create new file for writing. Discard existing contents, if any.
@@ -338,6 +340,7 @@ for i = 1 : Num_Radial
             Node_Co_Rl, Node_Co_Rr, Node_Co_C, Node_Co_Ct, Node_Co_Cb); % 内环节点边第一下索节点新坐标
 
     end
+    
     Node_Coordinate( ( (i-1)*Node_C_Itvl+1 ) : i*Node_C_Itvl, : ) = Node_Co_Part;
 end
 end

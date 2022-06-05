@@ -7,7 +7,7 @@
 function YH_Module_Model(Node_Coordinate, Node_Support,...
     Element_Node, Element_Property,...
     AREA, EM, MD,...
-    ANSYS_JName, ANSYS_JTitle, FileDir)
+    ANSYS_JName, ANSYS_JTitle, FileDir, SupportSwitch)
 
 %%
 % 其中环向索仅导入了内环
@@ -30,15 +30,15 @@ fprintf(fileID,'/CLEAR\n');
 fprintf(fileID,'/FILNAME, %s\n', ANSYS_JName);
 fprintf(fileID,'/TITLE, %s\n', ANSYS_JTitle);
 
-% 把Element_Property的数据导入APDL同名数组
-Row_EP = length(Element_Property(:,1));
-Col_EP = length(Element_Property(1,:));
-fprintf(fileID,'*DIM, Element_Property, ARRAY, %d, %d\n', Row_EP, Col_EP);
-for i = 1 : Row_EP
-    for j = 1 : Col_EP
-        fprintf(fileID,'Element_Property(%d,%d)=%d\n', i, j, Element_Property(i,j));
-    end
-end
+% % 把Element_Property的数据导入APDL同名数组
+% Row_EP = length(Element_Property(:,1));
+% Col_EP = length(Element_Property(1,:));
+% fprintf(fileID,'*DIM, Element_Property, ARRAY, %d, %d\n', Row_EP, Col_EP);
+% for i = 1 : Row_EP
+%     for j = 1 : Col_EP
+%         fprintf(fileID,'Element_Property(%d,%d)=%d\n', i, j, Element_Property(i,j));
+%     end
+% end
 
 % 前处理
 fprintf(fileID,'!进入前处理\n');
@@ -58,15 +58,15 @@ fprintf(fileID,'MP, DENS, 1, %f\n', MD);% DENS: Mass density.
 % 节点
 % *DIM, Par, Type, IMAX, JMAX, KMAX, Var1, Var2, Var3, CSYSID 
 % Defines an array parameter and its dimensions.
-% 把Node_Coordinate的数据导入APDL同名数组
-Row_NC = length(Node_Coordinate(:,1));
-Col_NC = length(Node_Coordinate(1,:));
-fprintf(fileID,'*DIM, Node_Coordinate, ARRAY, %d, %d\n', Row_NC, Col_NC);
-for i = 1 : Row_NC
-    for j = 1 : Col_NC
-        fprintf(fileID,'Node_Coordinate(%d,%d)=%d\n', i, j, Node_Coordinate(i,j));
-    end
-end
+% % 把Node_Coordinate的数据导入APDL同名数组
+% Row_NC = length(Node_Coordinate(:,1));
+% Col_NC = length(Node_Coordinate(1,:));
+% fprintf(fileID,'*DIM, Node_Coordinate, ARRAY, %d, %d\n', Row_NC, Col_NC);
+% for i = 1 : Row_NC
+%     for j = 1 : Col_NC
+%         fprintf(fileID,'Node_Coordinate(%d,%d)=%d\n', i, j, Node_Coordinate(i,j));
+%     end
+% end
 for i = 1 : length(Node_Coordinate(:,1))
     iNo_N = Node_Coordinate(i,1);
     iX = Node_Coordinate(i,2);
@@ -77,16 +77,16 @@ for i = 1 : length(Node_Coordinate(:,1))
     fprintf(fileID,'N, %d, %f, %f, %f\n', iNo_N, iX, iY, iZ);
 end
 % 单元
-% 把Element_Node的数据导入APDL同名数组
-Row_EN = length(Element_Node(:,1));
-Col_EN = length(Element_Node(1,:));
-fprintf(fileID,'*DIM, Element_Node, ARRAY, %d, %d\n', Row_EN, Col_EN);
-for i = 1 : Row_EN
-    for j = 1 : Col_EN
-        fprintf(fileID,'Element_Node(%d,%d)=%d\n', i, j, Element_Node(i,j));
-    end
-end
-for i = 1 : Row_EN
+% % 把Element_Node的数据导入APDL同名数组
+% Row_EN = length(Element_Node(:,1));
+% Col_EN = length(Element_Node(1,:));
+% fprintf(fileID,'*DIM, Element_Node, ARRAY, %d, %d\n', Row_EN, Col_EN);
+% for i = 1 : Row_EN
+%     for j = 1 : Col_EN
+%         fprintf(fileID,'Element_Node(%d,%d)=%d\n', i, j, Element_Node(i,j));
+%     end
+% end
+for i = 1 : length(Element_Node(:,1))
     iNo_E = Element_Node(i,1);
     iNo_N1 = Element_Node(i,2);
     iNo_N2 = Element_Node(i,3);
@@ -97,27 +97,29 @@ end
 % 约束
 % 逐点去约束法：先把所有节点都约束，逐步去掉恢复各节点约束，迭代求解
 % 额外约束
-for i = 1 : length(Node_Coordinate(:,1))
-    iNo_N = Node_Coordinate(i,1);
-    for j = 1 : length(Node_Support(:,1))
-        if iNo_N == Node_Support(j,1)
-            continue;
+if SupportSwitch == 1
+    for i = 1 : length(Node_Coordinate(:,1))
+        iNo_N = Node_Coordinate(i,1);
+        for j = 1 : length(Node_Support(:,1))
+            if iNo_N == Node_Support(j,1)
+                continue;
+            end
         end
+        fprintf(fileID,'D, %d, UX\n', iNo_N);
+        fprintf(fileID,'D, %d, UY\n', iNo_N);
+        fprintf(fileID,'D, %d, UZ\n', iNo_N);
     end
-    fprintf(fileID,'D, %d, UX\n', iNo_N);
-    fprintf(fileID,'D, %d, UY\n', iNo_N);
-    fprintf(fileID,'D, %d, UZ\n', iNo_N);
 end
 % 支座
-% 把Node_Support的数据导入APDL同名数组
-Row_NS = length(Node_Support(:,1));
-Col_NS = length(Node_Support(1,:));
-fprintf(fileID,'*DIM, Node_Support, ARRAY, %d, %d\n', Row_NS, Col_NS);
-for i = 1 : Row_NS
-    for j = 1 : Col_NS
-        fprintf(fileID,'Node_Support(%d,%d)=%d\n', i, j, Node_Support(i,j));
-    end
-end
+% % 把Node_Support的数据导入APDL同名数组
+% Row_NS = length(Node_Support(:,1));
+% Col_NS = length(Node_Support(1,:));
+% fprintf(fileID,'*DIM, Node_Support, ARRAY, %d, %d\n', Row_NS, Col_NS);
+% for i = 1 : Row_NS
+%     for j = 1 : Col_NS
+%         fprintf(fileID,'Node_Support(%d,%d)=%d\n', i, j, Node_Support(i,j));
+%     end
+% end
 for i = 1 : length(Node_Support(:,1))
     iNo_N = Node_Support(i,1);
     UX_bool = Node_Support(i,2);

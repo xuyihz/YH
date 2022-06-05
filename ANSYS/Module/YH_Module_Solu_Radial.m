@@ -124,15 +124,15 @@ fprintf(fileID,'FINISH\n'); % 退出模块
 fprintf(fileID,'/POST1\n'); % 进入后处理模块
 fprintf(fileID,'*GET, USUM, NODE, iNo_N_des, U, SUM\n');    % 提取节点总位移
 
-% %%% 读写文件
-% % Opens a "command" file.
-% fprintf(fileID,'*CFOPEN, 1.USUM, txt, , APPEND\n');  % *CFOPEN, Fname, Ext, --, Loc
-% % Writes data to a file in a formatted sequence.
-% fprintf(fileID,'*VWRITE, USUM\n');  % *VWRITE, Par1, Par2,...
-% % (3F8.4)表示3个参数都是用(F8.4)格式输出，或者用(F8.4,F8.4,F8.4)单个表示.
-% fprintf(fileID,'(F8.4)\n');         % Fortran格式描述符(此行在命令行输入会报错，只能直接读取文件执行)
-% % Closes the "command" file.
-% fprintf(fileID,'*CFCLOS\n');
+%%% 读写文件
+% Opens a "command" file.
+fprintf(fileID,'*CFOPEN, 1.USUM, txt, , APPEND\n');  % *CFOPEN, Fname, Ext, --, Loc
+% Writes data to a file in a formatted sequence.
+fprintf(fileID,'*VWRITE, USUM\n');  % *VWRITE, Par1, Par2,...
+% (3F8.4)表示3个参数都是用(F8.4)格式输出，或者用(F8.4,F8.4,F8.4)单个表示.
+fprintf(fileID,'(F8.4)\n');         % Fortran格式描述符(此行在命令行输入会报错，只能直接读取文件执行)
+% Closes the "command" file.
+fprintf(fileID,'*CFCLOS\n');
 
 % 
 % ETABLE, Lab(名称), Item(提取项), Comp, Option
