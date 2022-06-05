@@ -99,7 +99,7 @@ for i = 1 : Num_Radial
             EPEL_T_iEl = (j-1)*3+1 + Num_n1_n2*3*(i-1) + 1;
             EPEL_Radial(i, j+1, :) = EPEL_T( EPEL_T_iEl, : );    % 上索+1
             EPEL_B_iEl = EPEL_T_iEl;
-            EPEL_Radial(i, Num_n1_n2*2+1+j+1, :) = EPEL_T( EPEL_B_iEl, : );    % 下索+1
+            EPEL_Radial(i, Num_n1_n2*2+1+j+1, :) = EPEL_B( EPEL_B_iEl, : );    % 下索+1
         end
     end
 end
