@@ -11,6 +11,8 @@
 ### MATLAB x ANSYS (APDL)
 
 > .\MATLAB\ANSYS
+>
+> **YH_ANSYS.m**
 
 1. 运行Shape_Est.m，判断形态是否合理
 
@@ -38,7 +40,7 @@
 
    > ./MATLAB/Data/YH_ANSYS.mat
 
-5. 运行 XXX 迭代计算，确定下索形态
+5. 运行 YH_Module_FormFinding 迭代计算，确定下索形态
 
    > 确定自应力模态
    >

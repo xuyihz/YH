@@ -12,7 +12,8 @@ addpath(genpath('Func'))    % 搜索路径中加入Func文件夹及其下所有�
 addpath(genpath('Module'))  % 搜索路径中加入Func文件夹及其下所有文件夹
 
 %% 0.导入初始数据
-disp('0.导入初始数据');   disp(datetime); % 显示当前时间
+Time_0_name = '0.导入初始数据';   Time_0 = string(datetime);
+disp(Time_0_name);   disp(Time_0); % 显示当前时间
 % 其中环向索仅导入了内环
 load('../Data/YH.mat',...   % 数据文件位置
     'Node_Coordinate',...   % [节点编号, X坐标, Y坐标, Z坐标]
@@ -33,11 +34,13 @@ LSsteps = 20;       % 加载子步数
 f2 = -300;  % 下索跨中垂度(向上) mm YH_model.m
 
 %% 1.形态判断
-% disp('1.形态判断'); disp(datetime);
+% Time_1_name = '1.形态判断';   Time_1 = string(datetime);
+% disp(Time_1_name); disp(Time_1);
 % YH_Module_Shape_Judge(Node_Coordinate, Num_Radial, Node_Itvl);
 
 %% 2.单榀(Radial)自应力模态分析
-disp('2.单榀(Radial)自应力模态分析');    disp(datetime);
+Time_2_name = '2.单榀(Radial)自应力模态分析';   Time_2 = string(datetime);
+disp(Time_2_name);    disp(Time_2);
 % Job Name / Job Title
 ANSYS_JName = 'Cable';
 ANSYS_JTitle = 'The Analysis of Cable';
@@ -65,7 +68,8 @@ YH_Module_EPEL(Num_Radial, Num_n1_n2,...
     ANSYS_Mdir, EPEL_T_FN, EPEL_B_FN, Fext, EPEL_FDir);
 
 %% 3.下索找形
-disp('3.下索找形'); disp(datetime);
+Time_3_name = '3.下索找形';   Time_3 = string(datetime);
+disp(Time_3_name);  disp(Time_3);
 load('../Data/YH_ANSYS.mat',... % 数据文件位置
     'EPEL_T',...            % 单榀上索自应力模态(应变)
     'EPEL_B');              % 更新的(与上索一致)单榀下索自应力模态(应变)
@@ -82,7 +86,8 @@ save('../Data/YH.mat','Node_Coordinate_Update','-append');
 %% 4.更新节点坐标后的单榀(Radial)自应力模态分析
 %%%%%%%%% 后期修改3，使得计算完3后，新的单榀的应变已保存。可直接进入5
 %%%%%%%%% 这样就不用本节
-disp('4.更新节点坐标后的单榀(Radial)自应力模态分析');    disp(datetime);
+Time_4_name = '4.更新节点坐标后的单榀(Radial)自应力模态分析';   Time_4 = string(datetime);
+disp(Time_4_name);    disp(Time_4);
 % 生成APDL文件中Model部分
 YH_Module_Model(Node_Coordinate_Update, Node_Support,...
     Element_Node, Element_Property,...
@@ -99,7 +104,8 @@ YH_Module_EPEL(Num_Radial, Num_n1_n2,...
     ANSYS_Mdir, EPEL_T_FN, EPEL_B_FN, Fext, EPEL_FDir);
 
 %% 5.整体模型自应力模态下分析
-disp('5.整体模型自应力模态下分析'); disp(datetime);
+Time_5_name = '5.整体模型自应力模态下分析';   Time_5 = string(datetime);
+disp(Time_5_name);  disp(Time_5);
 load('../Data/YH.mat',...       % 数据文件位置
     'Node_Coordinate_Update');  % [节点编号, X坐标, Y坐标, Z坐标]
 load('../Data/YH_ANSYS.mat',... % 数据文件位置
@@ -118,10 +124,21 @@ YH_Module_Model(Node_Coordinate_Update, Node_Support,...
 YH_Module_Solu_Self(Num_Radial, EPEL_Radial, EPEL_Ring, LSsteps,...
     ANSYS_iFdir_3);
 
-% %% 运行完毕发邮件通知我
-disp('发邮件'); disp(datetime);
+%% 运行完毕发邮件通知我
+Time_6_name = '发邮件';   Time_6 = string(datetime);
+disp(Time_6_name); disp(Time_6);
 addpath(genpath('E:\Yi\Cloud\Coding\Matlab\SendMail'))
-SendMailto163('Subject: ANSYS运行完毕', 'Message: ANSYS运行完毕', 0);
+subject = 'ANSYS运行完毕';
+message = strcat('ANSYS运行完毕',...
+    Time_0_name, Time_0,...
+    Time_1_name, Time_1,...
+    Time_2_name, Time_2,...
+    Time_3_name, Time_3,...
+    Time_4_name, Time_4,...
+    Time_5_name, Time_5,...
+    Time_6_name, Time_6);
+attachments = 0;
+SendMailto163(subject, message, attachments);
 
 % %% 运行完毕后自动关机
 % system('shutdown.exe -s -t 300');
