@@ -34,7 +34,7 @@ LSsteps = 20;       % 加载子步数
 f2 = -300;  % 下索跨中垂度(向上) mm YH_model.m
 
 %% 1.形态判断
-% Time_1_name = '1.形态判断';   Time_1 = string(datetime);
+Time_1_name = '1.形态判断';   Time_1 = string(datetime);
 % disp(Time_1_name); disp(Time_1);
 % YH_Module_Shape_Judge(Node_Coordinate, Num_Radial, Node_Itvl);
 
