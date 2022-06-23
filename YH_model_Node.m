@@ -5,7 +5,7 @@
 
 %%
 function [Node_Itvl, n_iNo_Start, n_Ring_num] = YH_model_Node(fileID, iNO,...
-    n1, n2, n3, n23, n23_l, n23_0, n2_l,...
+    n1, n2_u, n3, n23, n23_l, n23_0, n2_l,...
     Num_Radial, Ring_itvl, f1, f2,...
     Num_n1_n2, Num_n2_n23, Num_n23_n3,...
     FZ, MatFile)
@@ -38,8 +38,8 @@ for i = 1:Num_Radial % 榀
     % n1~n2, 先上后下
     % 位形按抛物线 见interp_para
     for j = 1 : Num_n1_n2   % 上索
-        n_temp = interp(n1(i,:), n2(i,:), Num_n1_n2, j);
-        n_temp(3) = interp_para(n1(i,:), n2(i,:), Num_n1_n2, j, f1);
+        n_temp = interp(n1(i,:), n2_u(i,:), Num_n1_n2, j);
+        n_temp(3) = interp_para(n1(i,:), n2_u(i,:), Num_n1_n2, j, f1);
 
         iNO = iNO+1;
         fprintf(fileID,'   %d, %.4f, %.4f, %.4f\n',...
@@ -65,13 +65,13 @@ for i = 1:Num_Radial % 榀
         n2_iNo_Start = iNO; % 记录n2第一榀的编号
     end
     fprintf(fileID,'   %d, %.4f, %.4f, %.4f\n',...
-        iNO, n2(i,1), n2(i,2), n2(i,3));
+        iNO, n2_u(i,1), n2_u(i,2), n2_u(i,3));
     if MatFile == true
-        node_coordinate(iNO, n2(i,1), n2(i,2), n2(i,3));    % 坐标 记录到.mat
+        node_coordinate(iNO, n2_u(i,1), n2_u(i,2), n2_u(i,3));    % 坐标 记录到.mat
         node_support(iNO, 1, 1, 1);                         % 约束 记录到.mat
     end
     for j = 1 : Num_n2_n23
-        n_temp = interp(n2(i,:), n23(i,:), Num_n2_n23, j);
+        n_temp = interp(n2_u(i,:), n23(i,:), Num_n2_n23, j);
 
         iNO = iNO+1;
         fprintf(fileID,'   %d, %.4f, %.4f, %.4f\n',...
@@ -144,18 +144,18 @@ n_iNo_Start = [n1_iNo_Start; n2_iNo_Start; n2_l_iNo_Start; n23_iNo_Start;...
 iNO_Ring_init = iNO_Radial_end;
 iNO = iNO_Ring_init;    % 初始化
 % 环向间距
-n2_dist = dist_2p3D(n2(1,:), n2(2,:));
+n2_dist = dist_2p3D(n2_u(1,:), n2_u(2,:));
 n2_n23_dist = zeros(Num_n2_n23);
 for i = 1 : Num_n2_n23
-    n2_n23_1 = interp(n2(1,:), n23(1,:), Num_n2_n23, i);
-    n2_n23_2 = interp(n2(2,:), n23(2,:), Num_n2_n23, i);
+    n2_n23_1 = interp(n2_u(1,:), n23(1,:), Num_n2_n23, i);
+    n2_n23_2 = interp(n2_u(2,:), n23(2,:), Num_n2_n23, i);
     n2_n23_dist(i) = dist_2p3D(n2_n23_1, n2_n23_2);
 end
 n23_dist = dist_2p3D(n23(1,:), n23(2,:));
 n23_n3_dist = zeros(Num_n23_n3);
 for i = 1 : Num_n23_n3
-    n23_n3_1 = interp(n2(1,:), n23(1,:), Num_n23_n3, i);
-    n23_n3_2 = interp(n2(2,:), n23(2,:), Num_n23_n3, i);
+    n23_n3_1 = interp(n2_u(1,:), n23(1,:), Num_n23_n3, i);
+    n23_n3_2 = interp(n2_u(2,:), n23(2,:), Num_n23_n3, i);
     n23_n3_dist(i) = dist_2p3D(n23_n3_1, n23_n3_2);
 end
 n3_dist = dist_2p3D(n3(1,:), n3(2,:));
@@ -182,11 +182,11 @@ n_Ring_num = {n2_Ring_num, n2_l_Ring_num, n2_n23_Ring_num, n23_Ring_num,...
 for i = 1 : Num_Radial% 榀
     for j = 1 : 1   % n2
         for k = 1 : n2_Ring_num
-            n_temp_start = n2(i,:);
+            n_temp_start = n2_u(i,:);
             if i == Num_Radial
-                n_temp_end = n2(1,:);
+                n_temp_end = n2_u(1,:);
             else
-                n_temp_end = n2(i+1,:);
+                n_temp_end = n2_u(i+1,:);
             end
             n_temp = interp(n_temp_start, n_temp_end, n2_Ring_num, k);
             iNO = iNO+1;
@@ -211,13 +211,13 @@ for i = 1 : Num_Radial% 榀
     for j = 1 : Num_n2_n23   % n2~n23
         for ji = 1 : 2  % 上下两层
             if ji == 1
-                n2_temp1 = n2(i,:);
+                n2_temp1 = n2_u(i,:);
                 n23_temp1 = n23(i,:);
                 if i == Num_Radial
-                    n2_temp2 = n2(1,:);
+                    n2_temp2 = n2_u(1,:);
                     n23_temp2 = n23(1,:);
                 else
-                    n2_temp2 = n2(i+1,:);
+                    n2_temp2 = n2_u(i+1,:);
                     n23_temp2 = n23(i+1,:);
                 end
             elseif ji == 2
