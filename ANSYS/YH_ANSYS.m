@@ -23,7 +23,8 @@ load('../Data/YH.mat',...   % 数据文件位置
     'Num_Radial',...        % 榀数
     'Num_n1_n2',...         % n1~n2间的分隔数 (索桁架处)
     'Node_Itvl',...         % 每一榀的节点数
-    'iEL_Ring');            % 内环起始单元编号
+    'iEL_Ring',...          % 内环起始单元编号
+    'f1');                  % 垂度
 % 参数
 AREA = pi*100^2/4;  % 索截面面积 mm^2
 EM = 1.9E5;         % 索弹性模量 N/mm^2
@@ -31,7 +32,6 @@ MD = 7850;          % 索质量密度 kg/mm^2
 ISTRAN = 1.0E-2;    % 索初应变
 ERR_TOL = 1/1000;   % 误差容许值 mm^2
 LSsteps = 20;       % 加载子步数
-f2 = -300;  % 下索跨中垂度(向上) mm YH_model.m
 
 %% 1.形态判断
 Time_1_name = '1.形态判断';   Time_1 = string(datetime);
@@ -76,7 +76,7 @@ load('../Data/YH_ANSYS.mat',... % 数据文件位置
 ANSYS_iFdir_2 = '..\..\ANSYS\ANSYS_Files\2.Form-finding.ansys.txt';
 Node_Coordinate_Update = YH_Module_FormFinding(Node_Coordinate, Element_Node,...
     Num_Radial, Num_n1_n2, Node_Itvl,...
-    EPEL_T, EPEL_B, f2,...
+    EPEL_T, EPEL_B, -f1,...
     AREA, EM, MD,...
     ISTRAN, ERR_TOL, LSsteps,...
     ANSYS_JName, ANSYS_JTitle, ANSYS_iFdir_2,...
