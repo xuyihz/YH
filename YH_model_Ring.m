@@ -77,63 +77,63 @@ for i = 1 : Num_Radial % 榀
     iNO = iNO - 1;
 end
 
-% 索桁架
-ELE_TYPE = 'TENSTR';
-ELE_iMAT = 3; % User Define Cable
-ELE_iSUB = 3; % TENSTR/Cable
-fprintf(fileID,'; Cable\n');
-% 上索
-fprintf(fileID,'; CableTop\n');
-ELE_iPRO = ELE_iPRO_Cable_t;
-iNO = iNO_init; % 初始化iNO
-for i = 1 : Num_Radial % 榀
-    iNO = iNO + Node_Itvl;
-    for j = 1 : Num_n1_n2
-        iNO = iNO + 1; % 逐点定义
-        iN1 = iNO + 1;
-        if i == Num_Radial
-            iN2 = iNO_init + Node_Itvl + 1 + j;
-        else
-            iN2 = iN1 + Node_Itvl;
-        end
-        iEL = iEL+1;
-        fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
-            iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
-            iN1, iN2,...    % 单元的两个节点号
-            ELE_ANGLE, ELE_iSUB, TENSTR_F4);
-%         if MatFile == true
-%             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
-%             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+% % 索桁架
+% ELE_TYPE = 'TENSTR';
+% ELE_iMAT = 3; % User Define Cable
+% ELE_iSUB = 3; % TENSTR/Cable
+% fprintf(fileID,'; Cable\n');
+% % 上索
+% fprintf(fileID,'; CableTop\n');
+% ELE_iPRO = ELE_iPRO_Cable_t;
+% iNO = iNO_init; % 初始化iNO
+% for i = 1 : Num_Radial % 榀
+%     iNO = iNO + Node_Itvl;
+%     for j = 1 : Num_n1_n2
+%         iNO = iNO + 1; % 逐点定义
+%         iN1 = iNO + 1;
+%         if i == Num_Radial
+%             iN2 = iNO_init + Node_Itvl + 1 + j;
+%         else
+%             iN2 = iN1 + Node_Itvl;
 %         end
-    end
-    iNO = iNO - Num_n1_n2;
-end
-% 下索
-fprintf(fileID,'; CableBottom\n');
-ELE_iPRO = ELE_iPRO_Cable_b;
-iNO = iNO_init; % 初始化iNO
-for i = 1 : Num_Radial % 榀
-    iNO = iNO + Node_Itvl;
-    for j = 1 : Num_n1_n2
-        iNO = iNO + 1; % 逐点定义
-        iN1 = iNO + Num_n1_n2 + 1;
-        if i == Num_Radial
-            iN2 = iNO_init + Node_Itvl + Num_n1_n2 + 1 + j;
-        else
-            iN2 = iN1 + Node_Itvl;
-        end
-        iEL = iEL+1;
-        fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
-            iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
-            iN1, iN2,...    % 单元的两个节点号
-            ELE_ANGLE, ELE_iSUB, TENSTR_F4);
-%         if MatFile == true
-%             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
-%             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+%         iEL = iEL+1;
+%         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
+%             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
+%             iN1, iN2,...    % 单元的两个节点号
+%             ELE_ANGLE, ELE_iSUB, TENSTR_F4);
+% %         if MatFile == true
+% %             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+% %             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+% %         end
+%     end
+%     iNO = iNO - Num_n1_n2;
+% end
+% % 下索
+% fprintf(fileID,'; CableBottom\n');
+% ELE_iPRO = ELE_iPRO_Cable_b;
+% iNO = iNO_init; % 初始化iNO
+% for i = 1 : Num_Radial % 榀
+%     iNO = iNO + Node_Itvl;
+%     for j = 1 : Num_n1_n2
+%         iNO = iNO + 1; % 逐点定义
+%         iN1 = iNO + Num_n1_n2 + 1;
+%         if i == Num_Radial
+%             iN2 = iNO_init + Node_Itvl + Num_n1_n2 + 1 + j;
+%         else
+%             iN2 = iN1 + Node_Itvl;
 %         end
-    end
-    iNO = iNO - Num_n1_n2;
-end
+%         iEL = iEL+1;
+%         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d, %d, 1\n',...
+%             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
+%             iN1, iN2,...    % 单元的两个节点号
+%             ELE_ANGLE, ELE_iSUB, TENSTR_F4);
+% %         if MatFile == true
+% %             element_node(iEL, iN1, iN2);                    % 拓扑关系 记录到.mat
+% %             element_property(iEL, ELE_iPRO, ELE_iMAT);      % 属性(直径/弹性模量) 记录到.mat
+% %         end
+%     end
+%     iNO = iNO - Num_n1_n2;
+% end
 
 % 钢桁架(悬挑)
 ELE_TYPE = 'BEAM';
@@ -148,11 +148,18 @@ for i = 1 : Num_Radial % 榀
     iNO = iNO_init + Node_Itvl*i + (Num_n1_n2 * 2 + 1); % 初始化iNO    % 加上索桁架的节点数
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1);   % 初始化iNO_Ring
     for j = 1 : (Num_n2_n23 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n2_n23/2)+1
+        else
+            continue
+        end
+        
+        iNO = iNO + j; % 逐点定义
         for k = 1 : ( n_Ring_num_temp(j) + 1 )
             if k == 1
                 iN1 = iNO;
@@ -184,11 +191,18 @@ for i = 1 : Num_Radial % 榀
     iNO = iNO_init + Node_Itvl*i + (Num_n1_n2 * 2 + 1) + Num_n2_n23 + 1; % 初始化iNO   % 加上索桁架的节点数
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1);   % 初始化iNO_Ring
     for j = 1 : (Num_n2_n23 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n2_n23/2)+1
+        else
+            continue
+        end
+        
+        iNO = iNO + j; % 逐点定义
         for k = 1 : ( n_Ring_num_temp(j) + 1 )
             if k == 1
                 iN1 = iNO;
@@ -220,11 +234,18 @@ for i = 1 : Num_Radial % 榀
     iNO = iNO_init + Node_Itvl*i + (Num_n1_n2 * 2 + 1); % 初始化iNO    % 加上索桁架的节点数
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1);   % 初始化iNO_Ring
     for j = 1 : (Num_n2_n23 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n2_n23/2)+1
+        else
+            continue
+        end
+
+        iNO = iNO + j; % 逐点定义
         for k = 1 : n_Ring_num_temp(j)  % 竖杆
             iN1 = iNO_Ring + k - 1;
             iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
@@ -236,19 +257,26 @@ for i = 1 : Num_Radial % 榀
                 ELE_ANGLE, ELE_iSUB);
         end
         for k = 1 : ( n_Ring_num_temp(j) + 1 )    % 斜杆
-            if k == 1
+            if k == 1   % 第一根斜杆
                 iN1 = iNO;
                 iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
-            elseif k == ( n_Ring_num_temp(j) + 1 )
-                iN1 = iNO_Ring + k - 2;
+            elseif k == ( n_Ring_num_temp(j) + 1 )  % 最后一根斜杆
                 if i == Num_Radial
-                    iN2 = iNO_init + Node_Itvl + (Num_n1_n2 * 2 + 1) + Num_n2_n23 + 1 + j;
+                    iN1 = iNO_init + Node_Itvl + (Num_n1_n2 * 2 + 1) + j;
                 else
-                    iN2 = iNO + Num_n2_n23 + 1 + Node_Itvl;
+                    iN1 = iNO + Node_Itvl;
                 end
-            else
-                iN1 = iNO_Ring + k - 2;
-                iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
+                iN2 = iNO_Ring + k - 2 + n_Ring_num_temp(j);
+            else    % 中间斜杆
+                if k < n_Ring_num_temp(j)/2+1 % 同第一根斜杆
+                    iN1 = iNO_Ring + k - 2;
+                    iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
+                elseif k > n_Ring_num_temp(j)/2+1 % 同第一根斜杆
+                    iN1 = iNO_Ring + k - 1;
+                    iN2 = iNO_Ring + k - 2 + n_Ring_num_temp(j);
+                else    % 如为偶数，则中间不加腹杆
+                    continue
+                end
             end
             iEL = iEL+1;
             fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...
@@ -274,11 +302,18 @@ for i = 1 : Num_Radial % 榀
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1)...
         + n2_Ring_num + n2_l_Ring_num + sum(n2_n23_Ring_num)*2;   % 初始化iNO_Ring
     for j = 1 : (Num_n23_n3 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n23_n3/2)+1
+        else
+            continue
+        end
+
+        iNO = iNO + j; % 逐点定义
         for k = 1 : ( n_Ring_num_temp(j) + 1 )
             if k == 1
                 iN1 = iNO;
@@ -311,11 +346,18 @@ for i = 1 : Num_Radial % 榀
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1)...
         + n2_Ring_num + n2_l_Ring_num + sum(n2_n23_Ring_num)*2;   % 初始化iNO_Ring
     for j = 1 : (Num_n23_n3 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n23_n3/2)+1
+        else
+            continue
+        end
+
+        iNO = iNO + j; % 逐点定义
         for k = 1 : ( n_Ring_num_temp(j) + 1 )
             if k == 1
                 iN1 = iNO;
@@ -348,11 +390,18 @@ for i = 1 : Num_Radial % 榀
     iNO_Ring = iNO_Ring_Start + n_sum_Ring_num*(i-1)...
         + n2_Ring_num + n2_l_Ring_num + sum(n2_n23_Ring_num)*2;   % 初始化iNO_Ring
     for j = 1 : (Num_n23_n3 + 1)
-        iNO = iNO + j; % 逐点定义
         if j == 1
         else
-            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;   % 上下弦各一环
+            iNO_Ring = iNO_Ring + n_Ring_num_temp(j-1)*2;
         end
+        % 除了第一个、中间，其余不做环
+        if j == 1
+        elseif j == round(Num_n23_n3/2)+1
+        else
+            continue
+        end
+
+        iNO = iNO + j; % 逐点定义
         for k = 1 : n_Ring_num_temp(j)  % 竖杆
             iN1 = iNO_Ring + k - 1;
             iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
@@ -364,19 +413,26 @@ for i = 1 : Num_Radial % 榀
                 ELE_ANGLE, ELE_iSUB);
         end
         for k = 1 : ( n_Ring_num_temp(j) + 1 )    % 斜杆
-            if k == 1
+            if k == 1   % 第一根斜杆
                 iN1 = iNO;
                 iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
-            elseif k == ( n_Ring_num_temp(j) + 1 )
-                iN1 = iNO_Ring + k - 2;
+            elseif k == ( n_Ring_num_temp(j) + 1 )  % 最后一根斜杆
                 if i == Num_Radial
-                    iN2 = iNO_init + Node_Itvl + (Num_n1_n2 * 2 + Num_n2_n23 * 2 + 3) + Num_n23_n3 + 2 + j;
+                    iN1 = iNO_init + Node_Itvl + (Num_n1_n2 * 2 + Num_n2_n23 * 2 + 3) + j;
                 else
-                    iN2 = iNO + Num_n23_n3 + 2 + Node_Itvl;
+                    iN1 = iNO + Node_Itvl;
                 end
-            else
-                iN1 = iNO_Ring + k - 2;
-                iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
+                iN2 = iNO_Ring + k - 2 + n_Ring_num_temp(j);
+            else    % 中间斜杆
+                if k < n_Ring_num_temp(j)/2+1 % 同第一根斜杆
+                    iN1 = iNO_Ring + k - 2;
+                    iN2 = iNO_Ring + k - 1 + n_Ring_num_temp(j);
+                elseif k > n_Ring_num_temp(j)/2+1 % 同第一根斜杆
+                    iN1 = iNO_Ring + k - 1;
+                    iN2 = iNO_Ring + k - 2 + n_Ring_num_temp(j);
+                else    % 如为偶数，则中间不加腹杆
+                    continue
+                end
             end
             iEL = iEL+1;
             fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...

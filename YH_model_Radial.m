@@ -154,7 +154,7 @@ for i = 1 : Num_Radial % 榀
         iNO = iNO + 1; % 逐点定义
         iN1 = iNO + (Num_n1_n2 * 2 + 1) + Num_n2_n23 + 1;
         if j == (Num_n2_n23 + 1)
-            iN2 = iN1 + (1 + Num_n2_n23) + 1;
+            iN2 = iN1 + (1 + Num_n2_n23) + 2;
         else
             iN2 = iN1 + 1;
         end
@@ -260,15 +260,15 @@ for i = 1 : Num_Radial % 榀
     iNO = iNO + Node_Itvl;
     for j = 1 : Num_n23_n3
         iNO = iNO + 1; % 逐点定义
-        iN1 = iNO + (Num_n1_n2 * 2 + Num_n2_n23 * 2 + 3) + 1;
-        iN2 = iN1 + Num_n23_n3 + 1;
+        iN1 = iNO + (Num_n1_n2 * 2 + Num_n2_n23 * 2 + 3);
+        iN2 = iN1 + Num_n23_n3 + 3;
         iEL = iEL+1;
         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...
             iN1, iN2,...    % 斜交网格单元的两个节点号
             ELE_ANGLE, ELE_iSUB);
 
-        iN2 = iN2 + 1;
+        iN1 = iN1 + 1;
         iEL = iEL+1;
         fprintf(fileID,'   %d, %s, %d, %d, %d, %d, %d, %d\n',...
             iEL, ELE_TYPE, ELE_iMAT, ELE_iPRO,...

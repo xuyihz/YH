@@ -26,6 +26,8 @@ load('../Data/YH.mat',...   % 数据文件位置
     'iEL_Ring',...          % 内环起始单元编号
     'f1');                  % 垂度
 Fext = 'txt';               % 文件后缀
+% 
+Radial_N = 1;      % 榀 % 短轴=1, 长轴=11
 % 参数
 AREA = pi*100^2/4;  % 索截面面积 mm^2
 EM = 1.9E5;         % 索弹性模量 N/mm^2
@@ -47,23 +49,27 @@ ANSYS_Mdir = '..\..\ANSYS\Model';   % ANSYS模型工作目录
 ANSYS_oFdir = '..\..\ANSYS\ANSYS_Files\0.result.out';   % ANSYS输出文件
 % MATLAB数据文件路径
 DATA_FDir = '../Data/YH2_ANSYS.mat'; % 计算结果数据
-save(DATA_FDir, 'DATA_FDir');
+% 计算结果输出的变量名
+NODE = []; ELEM = [];
+save(DATA_FDir, 'NODE', 'ELEM', "Radial_N");
 
 % 单榀荷载 N
 F_cr_ori = 4000e3;
 F_cl_ori = -20e3;
 F_p_ori = [-40e3, 0];   % Z向上为正
-for j = 1 : 1   % 上/下索 1上2下
-    F_cr = ones(Num_n1_n2+1, 1) * F_cr_ori;
-    F_cl = ones(Num_n1_n2, 1) * F_cl_ori(j) * sign(1.5-j);  % sign(0.5)=1; sign(-0.5)=-1;
-    F_p = ones(Num_n1_n2, 1) * F_p_ori(j);
-end
-% 单榀上/下索的坐标
+% 单榀上/下索的节点坐标
 Node_Coordinate_Radial = zeros( Num_n1_n2+2 , length(Node_Coordinate(1,:)) );
-for i = 1 : 1   % 1 : Num_Radial % 榀
-    iNo_Start = 1+(i-1)*Node_Itvl;
-    iNo_Row_Start = find( Node_Coordinate(:,1) == iNo_Start );  % 查找iNo_Start在Node_Coordinate中的序列
-    for j = 1 : 1   % 上/下索 1上2下
+% 单榀上/下索的单元节点关系
+Element_Node_Radial = zeros( Num_n1_n2+1 , length(Element_Node(1,:)) );
+for j = 1 : 2   % 上/下索 1上2下
+    % 荷载
+    F_cr = ones(Num_n1_n2+1, 1) * F_cr_ori;
+    F_cl = ones(Num_n1_n2, 1) * F_cl_ori * sign(1.5-j);  % sign(0.5)=1; sign(-0.5)=-1;
+    F_p = ones(Num_n1_n2, 1) * F_p_ori(j);
+    % 节点
+    for i = Radial_N : Radial_N   % 1 : Num_Radial % 榀
+        iNo_Start = 1+(i-1)*Node_Itvl;
+        iNo_Row_Start = find( Node_Coordinate(:,1) == iNo_Start );  % 查找iNo_Start在Node_Coordinate中的序列
         Node_Coordinate_Radial(1,:) = Node_Coordinate(iNo_Row_Start,:);
         for k = 1 : Num_n1_n2
             iNo_Row_M = iNo_Row_Start + (j-1)*Num_n1_n2 + k ;
@@ -72,26 +78,24 @@ for i = 1 : 1   % 1 : Num_Radial % 榀
         iNo_Row_End = iNo_Row_Start + Num_n1_n2*2 + j;
         Node_Coordinate_Radial(end,:) = Node_Coordinate(iNo_Row_End,:);
     end
-end
-%
-Element_Node_Radial = zeros( Num_n1_n2+1 , length(Element_Node(1,:)) );
-for i = 1 : 1   % 1 : Num_Radial % 榀
-    for j = 1 : 1   % 上/下索 1上2下
+    % 单元
+    for i = Radial_N : Radial_N   % 1 : Num_Radial % 榀
         iE_Row_Start = 1 + (Num_n1_n2+1) * (i-1) + (Num_n1_n2+1) * Num_Radial * (j-1);
         iE_Row_End = iE_Row_Start + Num_n1_n2;
         Element_Node_Radial = Element_Node( iE_Row_Start : iE_Row_End , :);
     end
+    % 生成找形 APDL文件
+    oFileName = YH2_Module_FormFinding(...
+        Node_Coordinate_Radial, Element_Node_Radial,...
+        AREA, EM, MD,...
+        F_cr, F_cl, F_p,...
+        ANSYS_Mdir, Fext, ERR_TOL, LSsteps,...
+        ANSYS_JName, ANSYS_JTitle, ANSYS_iFdir_1);
+    % 自动调用ANSYS
+    status = YH_Module_RunANSYS(ANSYS_JName, ANSYS_Mdir, ANSYS_iFdir_1, ANSYS_oFdir);
+    % 把ANSYS APDL输出结果txt转换为MATLAB的.mat文件
+    YH2_Module_TXT2MAT(oFileName, ANSYS_Mdir, Fext, DATA_FDir)
+    % 显示时间
+    Time_temp_name = 'ANSYS计算完毕';   Time_temp = string(datetime);
+    disp(Time_temp_name);   disp(Time_temp); % 显示当前时间
 end
-% 生成找形 APDL文件
-oFileName = YH2_Module_FormFinding(...
-    Node_Coordinate_Radial, Element_Node_Radial,...
-    AREA, EM, MD,...
-    F_cr, F_cl, F_p,...
-    ANSYS_Mdir, Fext, ERR_TOL, LSsteps,...
-    ANSYS_JName, ANSYS_JTitle, ANSYS_iFdir_1);
-
-%%
-% 自动调用ANSYS
-status = YH_Module_RunANSYS(ANSYS_JName, ANSYS_Mdir, ANSYS_iFdir_1, ANSYS_oFdir);
-% 把ANSYS APDL输出结果txt转换为MATLAB的.mat文件
-YH2_Module_TXT2MAT(oFileName, ANSYS_Mdir, Fext, DATA_FDir)
